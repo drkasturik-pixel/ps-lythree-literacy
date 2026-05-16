@@ -4,23 +4,28 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Shadow Match Game</title>
+<title>Match Actions With Shadows</title>
 
 <style>
 
-body{
+*{
     margin:0;
-    font-family:Arial, sans-serif;
-    background:#fdf6e3;
-    overflow:hidden;
+    padding:0;
+    box-sizing:border-box;
 }
+
+body{
+    font-family:Arial, sans-serif;
+    background:linear-gradient(to bottom,#FFF4D6,#DFF4FF);
+    overflow:hidden;
+    height:100vh;
+}
+
+/* SPLASH SCREEN */
 
 #splash{
     position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
+    inset:0;
     background:white;
     display:flex;
     justify-content:center;
@@ -29,36 +34,44 @@ body{
 }
 
 #splash img{
-    width:220px;
+    width:240px;
+    max-width:75%;
 }
+
+/* GAME */
 
 #game{
     display:none;
     height:100vh;
     padding:10px;
-    box-sizing:border-box;
 }
 
 h1{
     text-align:center;
     color:#444;
     font-size:24px;
-    margin:5px;
+    margin-bottom:10px;
 }
+
+/* START BUTTON */
 
 #startBtn{
     display:block;
-    margin:10px auto;
-    padding:10px 20px;
+    margin:0 auto 10px auto;
+    padding:12px 22px;
     border:none;
-    border-radius:10px;
-    background:#ffcc80;
+    border-radius:12px;
+    background:#FFCC80;
     font-size:18px;
+    cursor:pointer;
 }
 
-.container{
+/* GAME BOARD */
+
+.board{
     display:flex;
     justify-content:space-between;
+    gap:15px;
     height:78vh;
 }
 
@@ -69,25 +82,29 @@ h1{
     justify-content:space-around;
 }
 
-.box{
-    height:22%;
+.card{
     background:white;
-    border-radius:15px;
-    border:3px solid #ffd180;
+    border:3px solid #FFD180;
+    border-radius:18px;
+    height:22%;
     display:flex;
     justify-content:center;
     align-items:center;
+    padding:8px;
 }
 
-.box img{
-    max-width:90%;
-    max-height:90%;
+.card img{
+    max-width:100%;
+    max-height:100%;
+    object-fit:contain;
 }
 
 .shadow.correct{
-    border:4px solid green;
-    background:#e8ffe8;
+    border:4px solid #66BB6A;
+    background:#E8F5E9;
 }
+
+/* FEEDBACK */
 
 #feedback{
     position:fixed;
@@ -96,7 +113,10 @@ h1{
     transform:translate(-50%,-50%);
     font-size:90px;
     display:none;
+    z-index:5000;
 }
+
+/* MOBILE */
 
 @media(max-width:768px){
 
@@ -104,7 +124,17 @@ h1{
         font-size:18px;
     }
 
-    .box{
+    #startBtn{
+        font-size:16px;
+        padding:10px 18px;
+    }
+
+    .board{
+        gap:8px;
+        height:80vh;
+    }
+
+    .card{
         height:23%;
     }
 }
@@ -117,7 +147,9 @@ h1{
 <!-- SPLASH -->
 
 <div id="splash">
-    <img src="assets/innovine-logo.png">
+
+    <img src="assets/innovine-logo.png" alt="Innovine Logo">
+
 </div>
 
 <!-- GAME -->
@@ -132,64 +164,64 @@ h1{
         Start Game
     </button>
 
-    <div class="container">
+    <div class="board">
 
-        <!-- LEFT -->
+        <!-- LEFT COLUMN -->
 
         <div class="column">
 
-            <div class="box">
+            <div class="card">
                 <img src="assets/singer1.png"
-                     draggable="true"
-                     id="singer1">
+                     id="singer1"
+                     draggable="true">
             </div>
 
-            <div class="box">
+            <div class="card">
                 <img src="assets/skipping2.png"
-                     draggable="true"
-                     id="skipping2">
+                     id="skipping2"
+                     draggable="true">
             </div>
 
-            <div class="box">
+            <div class="card">
                 <img src="assets/jumping3.png"
-                     draggable="true"
-                     id="jumping3">
+                     id="jumping3"
+                     draggable="true">
             </div>
 
-            <div class="box">
+            <div class="card">
                 <img src="assets/boy4.png"
-                     draggable="true"
-                     id="boy4">
+                     id="boy4"
+                     draggable="true">
             </div>
 
         </div>
 
-        <!-- RIGHT -->
+        <!-- RIGHT COLUMN -->
 
         <div class="column">
 
-            <div class="box shadow"
+            <div class="card shadow"
                  data-match="singer1">
 
                 <img src="assets/shadow1.png">
 
             </div>
 
-            <div class="box shadow"
+            <div class="card shadow"
                  data-match="skipping2">
 
                 <img src="assets/shadow2.png">
 
             </div>
 
-            <div class="box shadow"
+            <div class="card shadow"
                  data-match="jumping3">
 
                 <img src="assets/shadow3.png">
 
             </div>
 
-            <div class="box shadow"
+            <div class="card shadow"
                  data-match="boy4">
 
                 <img src="assets/shadow4.png">
@@ -208,21 +240,21 @@ h1{
 
 <!-- AUDIO -->
 
-<audio id="correctSound" src="assets/correct (1).mp3"></audio>
-
-<audio id="wrongSound" src="assets/wrong.mp3"></audio>
-
-<audio id="bgMusic" loop>
-    <source src="assets/background-music.mp3">
+<audio id="correctSound" preload="auto">
+    <source src="assets/correct (1).mp3" type="audio/mp3">
 </audio>
 
-<audio id="voiceInstruction">
-    <source src="assets/instruction.mp3">
+<audio id="wrongSound" preload="auto">
+    <source src="assets/wrong.mp3" type="audio/mp3">
+</audio>
+
+<audio id="bgMusic" loop preload="auto">
+    <source src="assets/background music.mp3" type="audio/mp3">
 </audio>
 
 <script>
 
-/* SPLASH */
+/* SPLASH SCREEN */
 
 setTimeout(function(){
 
@@ -231,33 +263,59 @@ setTimeout(function(){
 
 },5000);
 
+
 /* START BUTTON */
 
-document.getElementById("startBtn").onclick=function(){
+const startBtn=document.getElementById("startBtn");
 
-    document.getElementById("bgMusic").play();
+startBtn.addEventListener("click",startGame);
 
-    document.getElementById("voiceInstruction").play();
+function startGame(){
 
+    // BACKGROUND MUSIC
+
+    const bgMusic=document.getElementById("bgMusic");
+
+    bgMusic.volume=0.2;
+
+    bgMusic.play().catch(()=>{});
+
+    // SPOKEN INSTRUCTION
+
+    const instruction=new SpeechSynthesisUtterance(
+        "Drag and match the action with the correct shadow."
+    );
+
+    instruction.rate=0.9;
+    instruction.pitch=1;
+    instruction.volume=1;
+
+    speechSynthesis.speak(instruction);
+
+    // HIDE BUTTON
+
+    startBtn.style.display="none";
 }
 
-/* DRAG */
 
-let dragged=null;
+/* DRAG AND DROP */
 
-const draggables=document.querySelectorAll('[draggable="true"]');
+let draggedItem=null;
 
-draggables.forEach(function(item){
+const items=document.querySelectorAll('[draggable="true"]');
+
+items.forEach(function(item){
 
     item.addEventListener("dragstart",function(){
 
-        dragged=item;
+        draggedItem=item;
 
     });
 
 });
 
-/* DROP */
+
+/* DROP AREAS */
 
 const shadows=document.querySelectorAll(".shadow");
 
@@ -273,23 +331,24 @@ shadows.forEach(function(shadow){
 
         e.preventDefault();
 
-        let correct=shadow.getAttribute("data-match");
+        const correctMatch=shadow.dataset.match;
 
-        if(dragged.id===correct){
+        if(draggedItem.id===correctMatch){
 
             shadow.classList.add("correct");
 
-            shadow.innerHTML="<img src='"+dragged.src+"'>";
+            shadow.innerHTML=
+            "<img src='"+draggedItem.src+"'>";
 
-            dragged.style.visibility="hidden";
+            draggedItem.style.visibility="hidden";
 
-            correctAnswer();
+            playCorrect();
 
         }
 
         else{
 
-            wrongAnswer();
+            playWrong();
 
         }
 
@@ -297,39 +356,55 @@ shadows.forEach(function(shadow){
 
 });
 
-/* FEEDBACK */
 
-function correctAnswer(){
+/* CORRECT */
 
-    document.getElementById("correctSound").play();
+function playCorrect(){
 
-    let fb=document.getElementById("feedback");
+    const correctSound=
+    document.getElementById("correctSound");
 
-    fb.innerHTML="👏";
+    correctSound.currentTime=0;
 
-    fb.style.display="block";
+    correctSound.play();
+
+    const feedback=
+    document.getElementById("feedback");
+
+    feedback.innerHTML="👏";
+
+    feedback.style.display="block";
 
     setTimeout(function(){
 
-        fb.style.display="none";
+        feedback.style.display="none";
 
     },1000);
 
 }
 
-function wrongAnswer(){
 
-    document.getElementById("wrongSound").play();
+/* WRONG */
 
-    let fb=document.getElementById("feedback");
+function playWrong(){
 
-    fb.innerHTML="❌";
+    const wrongSound=
+    document.getElementById("wrongSound");
 
-    fb.style.display="block";
+    wrongSound.currentTime=0;
+
+    wrongSound.play();
+
+    const feedback=
+    document.getElementById("feedback");
+
+    feedback.innerHTML="❌";
+
+    feedback.style.display="block";
 
     setTimeout(function(){
 
-        fb.style.display="none";
+        feedback.style.display="none";
 
     },1000);
 
