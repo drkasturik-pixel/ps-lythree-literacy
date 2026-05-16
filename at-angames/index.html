@@ -21,7 +21,7 @@ body{
     height:100vh;
 }
 
-/* SPLASH SCREEN */
+/* SPLASH */
 
 #splash{
     position:fixed;
@@ -53,9 +53,10 @@ h1{
     margin-bottom:10px;
 }
 
-/* START BUTTON */
+/* BUTTONS */
 
-#startBtn{
+#startBtn,
+#playAgainBtn{
     display:block;
     margin:0 auto 10px auto;
     padding:12px 22px;
@@ -66,7 +67,11 @@ h1{
     cursor:pointer;
 }
 
-/* GAME BOARD */
+#playAgainBtn{
+    display:none;
+}
+
+/* BOARD */
 
 .board{
     display:flex;
@@ -116,17 +121,22 @@ h1{
     z-index:5000;
 }
 
+/* COMPLETION MESSAGE */
+
+#completeMessage{
+    text-align:center;
+    font-size:28px;
+    color:#4CAF50;
+    margin-bottom:10px;
+    display:none;
+}
+
 /* MOBILE */
 
 @media(max-width:768px){
 
     h1{
         font-size:18px;
-    }
-
-    #startBtn{
-        font-size:16px;
-        padding:10px 18px;
     }
 
     .board{
@@ -136,6 +146,10 @@ h1{
 
     .card{
         height:23%;
+    }
+
+    #completeMessage{
+        font-size:22px;
     }
 }
 
@@ -148,7 +162,7 @@ h1{
 
 <div id="splash">
 
-    <img src="assets/innovine-logo.png" alt="Innovine Logo">
+    <img src="assets/innovine-logo.png">
 
 </div>
 
@@ -164,9 +178,17 @@ h1{
         Start Game
     </button>
 
+    <div id="completeMessage">
+        🎉 Great Job! 🎉
+    </div>
+
+    <button id="playAgainBtn">
+        Play Again
+    </button>
+
     <div class="board">
 
-        <!-- LEFT COLUMN -->
+        <!-- LEFT -->
 
         <div class="column">
 
@@ -196,7 +218,7 @@ h1{
 
         </div>
 
-        <!-- RIGHT COLUMN -->
+        <!-- RIGHT -->
 
         <div class="column">
 
@@ -240,31 +262,32 @@ h1{
 
 <!-- AUDIO -->
 
-<audio id="correctSound" preload="auto">
+<audio id="correctSound">
     <source src="assets/correct (1).mp3" type="audio/mp3">
 </audio>
 
-<audio id="wrongSound" preload="auto">
+<audio id="wrongSound">
     <source src="assets/wrong.mp3" type="audio/mp3">
 </audio>
 
-<audio id="bgMusic" loop preload="auto">
+<audio id="bgMusic" loop>
     <source src="assets/background music.mp3" type="audio/mp3">
 </audio>
 
 <script>
 
-/* SPLASH SCREEN */
+/* SPLASH */
 
 setTimeout(function(){
 
     document.getElementById("splash").style.display="none";
+
     document.getElementById("game").style.display="block";
 
 },5000);
 
 
-/* START BUTTON */
+/* START GAME */
 
 const startBtn=document.getElementById("startBtn");
 
@@ -272,7 +295,7 @@ startBtn.addEventListener("click",startGame);
 
 function startGame(){
 
-    // BACKGROUND MUSIC
+    // MUSIC
 
     const bgMusic=document.getElementById("bgMusic");
 
@@ -280,29 +303,28 @@ function startGame(){
 
     bgMusic.play().catch(()=>{});
 
-    // SPOKEN INSTRUCTION
+    // SPEAK INSTRUCTION
 
-    const instruction=new SpeechSynthesisUtterance(
-        "Drag and match the action with the correct shadow."
-    );
+    const instruction=
+    new SpeechSynthesisUtterance(
+    "Drag and match the action with the correct shadow.");
 
     instruction.rate=0.9;
-    instruction.pitch=1;
-    instruction.volume=1;
 
     speechSynthesis.speak(instruction);
-
-    // HIDE BUTTON
 
     startBtn.style.display="none";
 }
 
 
-/* DRAG AND DROP */
+/* DRAG DROP */
 
 let draggedItem=null;
 
-const items=document.querySelectorAll('[draggable="true"]');
+let correctMatches=0;
+
+const items=
+document.querySelectorAll('[draggable="true"]');
 
 items.forEach(function(item){
 
@@ -315,9 +337,10 @@ items.forEach(function(item){
 });
 
 
-/* DROP AREAS */
+/* SHADOWS */
 
-const shadows=document.querySelectorAll(".shadow");
+const shadows=
+document.querySelectorAll(".shadow");
 
 shadows.forEach(function(shadow){
 
@@ -331,7 +354,8 @@ shadows.forEach(function(shadow){
 
         e.preventDefault();
 
-        const correctMatch=shadow.dataset.match;
+        const correctMatch=
+        shadow.dataset.match;
 
         if(draggedItem.id===correctMatch){
 
@@ -343,6 +367,32 @@ shadows.forEach(function(shadow){
             draggedItem.style.visibility="hidden";
 
             playCorrect();
+
+            correctMatches++;
+
+            // GAME COMPLETE
+
+            if(correctMatches===4){
+
+                setTimeout(function(){
+
+                    document.getElementById(
+                    "completeMessage").style.display="block";
+
+                    document.getElementById(
+                    "playAgainBtn").style.display="block";
+
+                    // SPEAK SUCCESS
+
+                    const doneSpeech=
+                    new SpeechSynthesisUtterance(
+                    "Great Job! Play again.");
+
+                    speechSynthesis.speak(doneSpeech);
+
+                },1000);
+
+            }
 
         }
 
@@ -361,12 +411,12 @@ shadows.forEach(function(shadow){
 
 function playCorrect(){
 
-    const correctSound=
+    const sound=
     document.getElementById("correctSound");
 
-    correctSound.currentTime=0;
+    sound.currentTime=0;
 
-    correctSound.play();
+    sound.play();
 
     const feedback=
     document.getElementById("feedback");
@@ -388,12 +438,12 @@ function playCorrect(){
 
 function playWrong(){
 
-    const wrongSound=
+    const sound=
     document.getElementById("wrongSound");
 
-    wrongSound.currentTime=0;
+    sound.currentTime=0;
 
-    wrongSound.play();
+    sound.play();
 
     const feedback=
     document.getElementById("feedback");
@@ -409,6 +459,17 @@ function playWrong(){
     },1000);
 
 }
+
+
+/* PLAY AGAIN */
+
+document.getElementById(
+"playAgainBtn").addEventListener(
+"click",function(){
+
+    location.reload();
+
+});
 
 </script>
 
