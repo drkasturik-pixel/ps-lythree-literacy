@@ -161,7 +161,7 @@ h1{
 
 <body>
 
-<!-- SPLASH -->
+<!-- SPLASH SCREEN -->
 
 <div id="splash">
 
@@ -195,11 +195,11 @@ h1{
 
     </div>
 
-    <!-- BOARD -->
+    <!-- GAME BOARD -->
 
     <div class="board">
 
-        <!-- LEFT -->
+        <!-- LEFT SIDE -->
 
         <div class="column">
 
@@ -229,23 +229,11 @@ h1{
 
         </div>
 
-        <!-- RIGHT -->
+        <!-- RIGHT SIDE - CHANGED ORDER -->
 
         <div class="column">
 
-            <div class="card shadow"
-                 data-match="singer1">
-
-                <img src="assets/shadow1.png">
-
-            </div>
-
-            <div class="card shadow"
-                 data-match="skipping2">
-
-                <img src="assets/shadow2.png">
-
-            </div>
+            <!-- shadow3 -->
 
             <div class="card shadow"
                  data-match="jumping3">
@@ -254,10 +242,30 @@ h1{
 
             </div>
 
+            <!-- shadow1 -->
+
+            <div class="card shadow"
+                 data-match="singer1">
+
+                <img src="assets/shadow1.png">
+
+            </div>
+
+            <!-- shadow4 -->
+
             <div class="card shadow"
                  data-match="boy4">
 
                 <img src="assets/shadow4.png">
+
+            </div>
+
+            <!-- shadow2 -->
+
+            <div class="card shadow"
+                 data-match="skipping2">
+
+                <img src="assets/shadow2.png">
 
             </div>
 
@@ -381,8 +389,6 @@ shadows.forEach(function(shadow){
 
         if(draggedItem.id === correctMatch){
 
-            // PREVENT DOUBLE DROP
-
             if(shadow.classList.contains("correct")){
                 return;
             }
@@ -407,8 +413,6 @@ shadows.forEach(function(shadow){
 
                     completeArea.style.display =
                     "block";
-
-                    // SUCCESS SPEECH
 
                     const doneSpeech =
                     new SpeechSynthesisUtterance(
@@ -511,19 +515,19 @@ function resetGame(){
     "boy4").style.visibility = "visible";
 
 
-    // RESET SHADOWS
+    // RESET SHADOWS IN CHANGED ORDER
 
     shadows[0].innerHTML =
-    '<img src="assets/shadow1.png">';
-
-    shadows[1].innerHTML =
-    '<img src="assets/shadow2.png">';
-
-    shadows[2].innerHTML =
     '<img src="assets/shadow3.png">';
 
-    shadows[3].innerHTML =
+    shadows[1].innerHTML =
+    '<img src="assets/shadow1.png">';
+
+    shadows[2].innerHTML =
     '<img src="assets/shadow4.png">';
+
+    shadows[3].innerHTML =
+    '<img src="assets/shadow2.png">';
 
     shadows.forEach(function(shadow){
 
