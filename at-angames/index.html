@@ -38,7 +38,7 @@ body{
     max-width:75%;
 }
 
-/* GAME */
+/* GAME AREA */
 
 #game{
     display:none;
@@ -199,7 +199,7 @@ h1{
 
     <div class="board">
 
-        <!-- LEFT SIDE -->
+        <!-- LEFT SIDE - ACTIONS -->
 
         <div class="column">
 
@@ -229,9 +229,18 @@ h1{
 
         </div>
 
-        <!-- RIGHT SIDE - CHANGED ORDER -->
+        <!-- RIGHT SIDE - SHADOWS -->
 
         <div class="column">
+
+            <!-- shadow4 -->
+
+            <div class="card shadow"
+                 data-match="boy4">
+
+                <img src="assets/shadow4.png">
+
+            </div>
 
             <!-- shadow3 -->
 
@@ -248,15 +257,6 @@ h1{
                  data-match="singer1">
 
                 <img src="assets/shadow1.png">
-
-            </div>
-
-            <!-- shadow4 -->
-
-            <div class="card shadow"
-                 data-match="boy4">
-
-                <img src="assets/shadow4.png">
 
             </div>
 
@@ -515,16 +515,16 @@ function resetGame(){
     "boy4").style.visibility = "visible";
 
 
-    // RESET SHADOWS IN CHANGED ORDER
+    // RESET SHADOWS ORDER
 
     shadows[0].innerHTML =
-    '<img src="assets/shadow3.png">';
+    '<img src="assets/shadow4.png">';
 
     shadows[1].innerHTML =
-    '<img src="assets/shadow1.png">';
+    '<img src="assets/shadow3.png">';
 
     shadows[2].innerHTML =
-    '<img src="assets/shadow4.png">';
+    '<img src="assets/shadow1.png">';
 
     shadows[3].innerHTML =
     '<img src="assets/shadow2.png">';
