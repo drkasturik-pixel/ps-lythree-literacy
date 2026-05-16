@@ -21,7 +21,7 @@ body{
     height:100vh;
 }
 
-/* SPLASH */
+/* SPLASH SCREEN */
 
 #splash{
     position:fixed;
@@ -57,8 +57,6 @@ h1{
 
 #startBtn,
 #playAgainBtn{
-    display:block;
-    margin:0 auto 10px auto;
     padding:12px 22px;
     border:none;
     border-radius:12px;
@@ -67,8 +65,23 @@ h1{
     cursor:pointer;
 }
 
-#playAgainBtn{
+#startBtn{
+    display:block;
+    margin:0 auto 10px auto;
+}
+
+/* COMPLETE AREA */
+
+#completeArea{
     display:none;
+    text-align:center;
+    margin-bottom:10px;
+}
+
+#completeMessage{
+    font-size:28px;
+    color:#4CAF50;
+    margin-bottom:10px;
 }
 
 /* BOARD */
@@ -121,16 +134,6 @@ h1{
     z-index:5000;
 }
 
-/* COMPLETION MESSAGE */
-
-#completeMessage{
-    text-align:center;
-    font-size:28px;
-    color:#4CAF50;
-    margin-bottom:10px;
-    display:none;
-}
-
 /* MOBILE */
 
 @media(max-width:768px){
@@ -178,13 +181,21 @@ h1{
         Start Game
     </button>
 
-    <div id="completeMessage">
-        🎉 Great Job! 🎉
+    <!-- COMPLETE AREA -->
+
+    <div id="completeArea">
+
+        <div id="completeMessage">
+            🎉 Great Job! 🎉
+        </div>
+
+        <button id="playAgainBtn">
+            Play Again
+        </button>
+
     </div>
 
-    <button id="playAgainBtn">
-        Play Again
-    </button>
+    <!-- BOARD -->
 
     <div class="board">
 
@@ -276,7 +287,7 @@ h1{
 
 <script>
 
-/* SPLASH */
+/* SPLASH SCREEN */
 
 setTimeout(function(){
 
@@ -287,84 +298,102 @@ setTimeout(function(){
 },5000);
 
 
+/* VARIABLES */
+
+let draggedItem = null;
+
+let correctMatches = 0;
+
+const startBtn =
+document.getElementById("startBtn");
+
+const completeArea =
+document.getElementById("completeArea");
+
+const playAgainBtn =
+document.getElementById("playAgainBtn");
+
+const items =
+document.querySelectorAll('[draggable="true"]');
+
+const shadows =
+document.querySelectorAll(".shadow");
+
+
 /* START GAME */
 
-const startBtn=document.getElementById("startBtn");
-
-startBtn.addEventListener("click",startGame);
+startBtn.addEventListener("click", startGame);
 
 function startGame(){
 
-    // MUSIC
+    // BACKGROUND MUSIC
 
-    const bgMusic=document.getElementById("bgMusic");
+    const bgMusic =
+    document.getElementById("bgMusic");
 
-    bgMusic.volume=0.2;
+    bgMusic.volume = 0.2;
 
     bgMusic.play().catch(()=>{});
 
-    // SPEAK INSTRUCTION
+    // SPOKEN INSTRUCTION
 
-    const instruction=
+    const instruction =
     new SpeechSynthesisUtterance(
     "Drag and match the action with the correct shadow.");
 
-    instruction.rate=0.9;
+    instruction.rate = 0.9;
 
     speechSynthesis.speak(instruction);
 
-    startBtn.style.display="none";
+    startBtn.style.display = "none";
 }
 
 
-/* DRAG DROP */
-
-let draggedItem=null;
-
-let correctMatches=0;
-
-const items=
-document.querySelectorAll('[draggable="true"]');
+/* DRAG */
 
 items.forEach(function(item){
 
-    item.addEventListener("dragstart",function(){
+    item.addEventListener("dragstart", function(){
 
-        draggedItem=item;
+        draggedItem = item;
 
     });
 
 });
 
 
-/* SHADOWS */
-
-const shadows=
-document.querySelectorAll(".shadow");
+/* DROP */
 
 shadows.forEach(function(shadow){
 
-    shadow.addEventListener("dragover",function(e){
+    shadow.addEventListener("dragover", function(e){
 
         e.preventDefault();
 
     });
 
-    shadow.addEventListener("drop",function(e){
+    shadow.addEventListener("drop", function(e){
 
         e.preventDefault();
 
-        const correctMatch=
+        const correctMatch =
         shadow.dataset.match;
 
-        if(draggedItem.id===correctMatch){
+        if(draggedItem.id === correctMatch){
+
+            // PREVENT DOUBLE DROP
+
+            if(shadow.classList.contains("correct")){
+                return;
+            }
 
             shadow.classList.add("correct");
 
-            shadow.innerHTML=
+            shadow.innerHTML =
             "<img src='"+draggedItem.src+"'>";
 
-            draggedItem.style.visibility="hidden";
+            draggedItem.style.visibility =
+            "hidden";
 
             playCorrect();
 
@@ -372,21 +401,18 @@ shadows.forEach(function(shadow){
 
             // GAME COMPLETE
 
-            if(correctMatches===4){
+            if(correctMatches === 4){
 
                 setTimeout(function(){
 
-                    document.getElementById(
-                    "completeMessage").style.display="block";
+                    completeArea.style.display =
+                    "block";
 
-                    document.getElementById(
-                    "playAgainBtn").style.display="block";
+                    // SUCCESS SPEECH
 
-                    // SPEAK SUCCESS
-
-                    const doneSpeech=
+                    const doneSpeech =
                     new SpeechSynthesisUtterance(
-                    "Great Job! Play again.");
+                    "Great job. Play again.");
 
                     speechSynthesis.speak(doneSpeech);
 
@@ -411,26 +437,25 @@ shadows.forEach(function(shadow){
 
 function playCorrect(){
 
-    const sound=
+    const sound =
     document.getElementById("correctSound");
 
-    sound.currentTime=0;
+    sound.currentTime = 0;
 
     sound.play();
 
-    const feedback=
+    const feedback =
     document.getElementById("feedback");
 
-    feedback.innerHTML="👏";
+    feedback.innerHTML = "👏";
 
-    feedback.style.display="block";
+    feedback.style.display = "block";
 
     setTimeout(function(){
 
-        feedback.style.display="none";
+        feedback.style.display = "none";
 
     },1000);
-
 }
 
 
@@ -438,38 +463,75 @@ function playCorrect(){
 
 function playWrong(){
 
-    const sound=
+    const sound =
     document.getElementById("wrongSound");
 
-    sound.currentTime=0;
+    sound.currentTime = 0;
 
     sound.play();
 
-    const feedback=
+    const feedback =
     document.getElementById("feedback");
 
-    feedback.innerHTML="❌";
+    feedback.innerHTML = "❌";
 
-    feedback.style.display="block";
+    feedback.style.display = "block";
 
     setTimeout(function(){
 
-        feedback.style.display="none";
+        feedback.style.display = "none";
 
     },1000);
-
 }
 
 
 /* PLAY AGAIN */
 
-document.getElementById(
-"playAgainBtn").addEventListener(
-"click",function(){
+playAgainBtn.addEventListener(
+"click", resetGame);
 
-    location.reload();
+function resetGame(){
 
-});
+    correctMatches = 0;
+
+    completeArea.style.display = "none";
+
+    // RESET LEFT IMAGES
+
+    document.getElementById(
+    "singer1").style.visibility = "visible";
+
+    document.getElementById(
+    "skipping2").style.visibility = "visible";
+
+    document.getElementById(
+    "jumping3").style.visibility = "visible";
+
+    document.getElementById(
+    "boy4").style.visibility = "visible";
+
+
+    // RESET SHADOWS
+
+    shadows[0].innerHTML =
+    '<img src="assets/shadow1.png">';
+
+    shadows[1].innerHTML =
+    '<img src="assets/shadow2.png">';
+
+    shadows[2].innerHTML =
+    '<img src="assets/shadow3.png">';
+
+    shadows[3].innerHTML =
+    '<img src="assets/shadow4.png">';
+
+    shadows.forEach(function(shadow){
+
+        shadow.classList.remove("correct");
+
+    });
+
+}
 
 </script>
 
